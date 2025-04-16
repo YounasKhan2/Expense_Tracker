@@ -20,18 +20,37 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
   }
 
   Future<void> _loadExpenses() async {
-    final dbHelper = DatabaseHelper(); // Ensure proper database access
+    final dbHelper = DatabaseHelper();
     final expenses = await dbHelper.getExpenses();
+    final splits = await dbHelper.getSplits();
     setState(() {
-      _expenses = expenses;
+      _expenses = expenses + splits.map((split) {
+        return {
+          'title': 'Split: ${split['totalAmount']} PKR',
+          'category': 'Custom Split',
+          'date': null,
+          'details': split['details'],
+        };
+      }).toList();
     });
   }
 
-  Future<void> _deleteExpense(int id) async {
+  Future<void> _deleteExpense(int? id) async {
+    if (id == null) {
+      debugPrint('Skipping deletion for expense with null ID.');
+      return; // Skip deletion if ID is null
+    }
     final dbHelper = DatabaseHelper(); // Ensure proper database access
     await dbHelper.deleteExpense(id);
     Fluttertoast.showToast(msg: 'Expense deleted successfully!');
     _loadExpenses();
+  }
+
+  Future<void> _clearAllExpenses() async {
+    final dbHelper = DatabaseHelper();
+    await dbHelper.deleteAllExpenses();
+    Fluttertoast.showToast(msg: 'All expenses deleted successfully!');
+    _loadExpenses(); // Refresh the list
   }
 
   Future<void> _editExpense(Map<String, dynamic> expense) async {
@@ -54,6 +73,12 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Expense History'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_forever),
+            onPressed: _clearAllExpenses, // Clear all expenses
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: _expenses.length,
@@ -63,21 +88,30 @@ class _ExpenseListScreenState extends State<ExpenseListScreen> {
             margin: const EdgeInsets.all(8.0),
             child: ListTile(
               title: Text(expense['title']),
-              subtitle: Text(
-                'Category: ${expense['category']}\n'
-                'Date: ${expense['date'] != null ? DateTime.parse(expense['date']).toLocal().toString().split(' ')[0] : 'N/A'}',
-              ),
+              subtitle: expense['details'] != null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Category: ${expense['category']}'),
+                        ...expense['details'].map<Widget>((detail) {
+                          return Text('${detail['name']}: ${detail['percentage']}%');
+                        }).toList(),
+                      ],
+                    )
+                  : Text('Category: ${expense['category']}'),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _editExpense(expense),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteExpense(expense['id']),
-                  ),
+                  if (expense['id'] != null) // Only show edit and delete for valid expenses
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () => _editExpense(expense),
+                    ),
+                  if (expense['id'] != null)
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _deleteExpense(expense['id']),
+                    ),
                 ],
               ),
             ),

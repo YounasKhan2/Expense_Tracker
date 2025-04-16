@@ -130,20 +130,13 @@ class _ExpenseEntryScreenState extends State<ExpenseEntryScreen> {
         if (mounted) {
           Navigator.pop(context, true);
         }
-      } else if (result == 0) {
-        debugPrint("Operation did not affect any rows");
-        Fluttertoast.showToast(msg: 'No changes were made.');
       } else {
         debugPrint("Operation failed with result: $result");
         Fluttertoast.showToast(msg: 'Failed to save expense.');
       }
     } catch (e) {
       debugPrint("Error during save operation: $e");
-      if (Platform.isAndroid || Platform.isIOS) {
-        Fluttertoast.showToast(msg: 'Error: $e'); // Only show toast on supported platforms
-      } else {
-        debugPrint("Toast not supported on this platform: $e");
-      }
+      Fluttertoast.showToast(msg: 'Error: $e');
     } finally {
       // Reset loading state if still mounted
       if (mounted) {
@@ -296,3 +289,4 @@ class _ExpenseEntryScreenState extends State<ExpenseEntryScreen> {
     super.dispose();
   }
 }
+

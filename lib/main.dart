@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'splash_screen.dart'; // Import SplashScreen
 import 'home_screen.dart'; // Import MyHomePage
+import 'database_helper.dart'; // Import DatabaseHelper
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
   runApp(const MyApp());
 }
 

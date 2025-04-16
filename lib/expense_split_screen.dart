@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'database_helper.dart'; // Import DatabaseHelper
 
 class ExpenseSplitScreen extends StatefulWidget {
   const ExpenseSplitScreen({super.key});
@@ -9,10 +10,20 @@ class ExpenseSplitScreen extends StatefulWidget {
 
 class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
   final TextEditingController _totalAmountController = TextEditingController();
-  final TextEditingController _customPercentageController = TextEditingController();
   final TextEditingController _personsController = TextEditingController();
   String _selectedModel = 'Equal Split';
   String _result = '';
+  List<Map<String, dynamic>> _personDetails = [];
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+
+  void _updatePersonFields() {
+    final persons = int.tryParse(_personsController.text) ?? 0;
+    setState(() {
+      _personDetails = List.generate(persons, (index) {
+        return {'name': '', 'percentage': ''};
+      });
+    });
+  }
 
   void _calculateSplit() {
     final totalAmount = double.tryParse(_totalAmountController.text);
@@ -38,18 +49,33 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
         _result = 'Each person pays: PKR${splitAmount.toStringAsFixed(2)}';
       });
     } else if (_selectedModel == 'Custom Percentage Split') {
-      final customPercentage = double.tryParse(_customPercentageController.text);
-      if (customPercentage == null || customPercentage <= 0 || customPercentage > 100) {
+      double totalPercentage = 0;
+      for (var person in _personDetails) {
+        final percentage = double.tryParse(person['percentage'] ?? '');
+        if (percentage == null || percentage <= 0 || percentage > 100) {
+          setState(() {
+            _result = 'Please enter valid percentages for all persons.';
+          });
+          return;
+        }
+        totalPercentage += percentage;
+      }
+
+      if (totalPercentage != 100) {
         setState(() {
-          _result = 'Please enter a valid percentage (1-100).';
+          _result = 'Total percentage must equal 100%.';
         });
         return;
       }
-      final userAShare = totalAmount * (customPercentage / 100);
-      final userBShare = totalAmount - userAShare;
+
       setState(() {
-        _result = 'User A pays: PKR${userAShare.toStringAsFixed(2)}, '
-            'User B pays: PKR${userBShare.toStringAsFixed(2)}';
+        _result = _personDetails
+            .map((person) {
+              final percentage = double.parse(person['percentage']);
+              final share = totalAmount * (percentage / 100);
+              return '${person['name']} pays: PKR${share.toStringAsFixed(2)}';
+            })
+            .join('\n');
       });
     }
   }
@@ -62,8 +88,7 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             TextField(
               controller: _totalAmountController,
@@ -81,6 +106,7 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
+              onChanged: (_) => _updatePersonFields(),
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
@@ -92,6 +118,7 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
               onChanged: (value) {
                 setState(() {
                   _selectedModel = value!;
+                  _updatePersonFields();
                 });
               },
               decoration: const InputDecoration(
@@ -101,16 +128,36 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
             ),
             if (_selectedModel == 'Custom Percentage Split') ...[
               const SizedBox(height: 16),
-              TextField(
-                controller: _customPercentageController,
-                decoration: const InputDecoration(
-                  labelText: 'User A\'s Percentage (%)',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-              ),
+              ..._personDetails.asMap().entries.map((entry) {
+                final index = entry.key;
+                final person = entry.value;
+                return Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Person ${index + 1} Name',
+                        border: const OutlineInputBorder(), // Corrected here
+                      ),
+                      onChanged: (value) {
+                        person['name'] = value;
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Person ${index + 1} Percentage (%)',
+                        border: const OutlineInputBorder(), // Corrected here
+                      ),
+                      keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                        person['percentage'] = value;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                );
+              }),
             ],
-            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _calculateSplit,
               child: const Text('Calculate Split'),

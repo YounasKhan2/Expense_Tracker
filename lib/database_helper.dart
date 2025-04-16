@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'dart:io'; // For file operations
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -48,6 +49,22 @@ class DatabaseHelper {
             )
           ''');
           debugPrint("Expenses table created successfully");
+
+          await db.execute('''
+            CREATE TABLE splits (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              totalAmount REAL
+            )
+          ''');
+          await db.execute('''
+            CREATE TABLE split_details (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              splitId INTEGER,
+              name TEXT,
+              percentage REAL,
+              FOREIGN KEY (splitId) REFERENCES splits (id)
+            )
+          ''');
         },
         onOpen: (db) {
           debugPrint("Database opened successfully");
@@ -90,5 +107,39 @@ class DatabaseHelper {
   Future<int> deleteExpense(int id) async {
     final db = await database;
     return await db.delete('expenses', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<void> deleteAllExpenses() async {
+    final db = await database;
+    await db.delete('expenses');
+    debugPrint("All expenses deleted successfully");
+  }
+
+  Future<int> insertSplit(Map<String, dynamic> split) async {
+    final db = await database;
+    final splitId = await db.insert('splits', {'totalAmount': split['totalAmount']});
+    for (var detail in split['splitDetails']) {
+      await db.insert('split_details', {
+        'splitId': splitId,
+        'name': detail['name'],
+        'percentage': detail['percentage'],
+      });
+    }
+    return splitId;
+  }
+
+  Future<List<Map<String, dynamic>>> getSplits() async {
+    final db = await database;
+    final splits = await db.query('splits');
+    final List<Map<String, dynamic>> result = [];
+    for (var split in splits) {
+      final splitId = split['id'];
+      final details = await db.query('split_details', where: 'splitId = ?', whereArgs: [splitId]);
+      result.add({
+        ...split, // Copy existing split data
+        'details': details, // Add details as a new key
+      });
+    }
+    return result;
   }
 }
