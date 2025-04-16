@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'expense_entry_screen.dart'; // Import ExpenseEntryScreen
+import 'expense_entry_screen.dart'; // Ensure this import is correct
 import 'expense_list_screen.dart'; // Import ExpenseListScreen
 import 'expense_split_screen.dart'; // Import ExpenseSplitScreen
 
@@ -56,4 +56,3 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
-

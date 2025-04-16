@@ -10,11 +10,14 @@ class ExpenseSplitScreen extends StatefulWidget {
 class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
   final TextEditingController _totalAmountController = TextEditingController();
   final TextEditingController _customPercentageController = TextEditingController();
+  final TextEditingController _personsController = TextEditingController();
   String _selectedModel = 'Equal Split';
   String _result = '';
 
   void _calculateSplit() {
     final totalAmount = double.tryParse(_totalAmountController.text);
+    final persons = int.tryParse(_personsController.text);
+
     if (totalAmount == null || totalAmount <= 0) {
       setState(() {
         _result = 'Please enter a valid total amount.';
@@ -22,10 +25,17 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
       return;
     }
 
-    if (_selectedModel == 'Equal Split') {
-      final splitAmount = totalAmount / 2;
+    if (persons == null || persons <= 0) {
       setState(() {
-        _result = 'Each user pays: PKR${splitAmount.toStringAsFixed(2)}';
+        _result = 'Please enter a valid number of persons.';
+      });
+      return;
+    }
+
+    if (_selectedModel == 'Equal Split') {
+      final splitAmount = totalAmount / persons;
+      setState(() {
+        _result = 'Each person pays: PKR${splitAmount.toStringAsFixed(2)}';
       });
     } else if (_selectedModel == 'Custom Percentage Split') {
       final customPercentage = double.tryParse(_customPercentageController.text);
@@ -59,6 +69,15 @@ class _ExpenseSplitScreenState extends State<ExpenseSplitScreen> {
               controller: _totalAmountController,
               decoration: const InputDecoration(
                 labelText: 'Total Expense Amount (PKR)',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _personsController,
+              decoration: const InputDecoration(
+                labelText: 'Number of Persons',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
