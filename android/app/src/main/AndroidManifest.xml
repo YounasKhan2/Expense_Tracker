@@ -1,8 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="Expense Tracker"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+=======
+        android:label="mini_project"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
         <activity
             android:name=".MainActivity"
             android:exported="true"

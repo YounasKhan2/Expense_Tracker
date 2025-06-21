@@ -27,7 +27,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
+<<<<<<< HEAD
   if (!window.Create(L"expense_tracker", origin, size)) {
+=======
+  if (!window.Create(L"mini_project", origin, size)) {
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

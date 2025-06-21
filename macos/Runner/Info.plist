@@ -13,7 +13,11 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
+<<<<<<< HEAD
 	<string>New_App_Name</string>
+=======
+	<string>$(PRODUCT_NAME)</string>
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

@@ -22,11 +22,19 @@
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
+<<<<<<< HEAD
                 <menuItem title="New_App_Name" id="1Xt-HY-uBw">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="New_App_Name" systemMenu="apple" id="uQy-DD-JDr">
                         <items>
                             <menuItem title="About New_App_Name" id="5kV-Vb-QxS">
+=======
+                <menuItem title="APP_NAME" id="1Xt-HY-uBw">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="APP_NAME" systemMenu="apple" id="uQy-DD-JDr">
+                        <items>
+                            <menuItem title="About APP_NAME" id="5kV-Vb-QxS">
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="orderFrontStandardAboutPanel:" target="-1" id="Exp-CZ-Vem"/>
@@ -40,7 +48,11 @@
                                 <menu key="submenu" title="Services" systemMenu="services" id="hz9-B4-Xy5"/>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="4je-JR-u6R"/>
+<<<<<<< HEAD
                             <menuItem title="Hide New_App_Name" keyEquivalent="h" id="Olw-nP-bQN">
+=======
+                            <menuItem title="Hide APP_NAME" keyEquivalent="h" id="Olw-nP-bQN">
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
                                 <connections>
                                     <action selector="hide:" target="-1" id="PnN-Uc-m68"/>
                                 </connections>
@@ -58,7 +70,11 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
+<<<<<<< HEAD
                             <menuItem title="Quit New_App_Name" keyEquivalent="q" id="4sb-4s-VLi">
+=======
+                            <menuItem title="Quit APP_NAME" keyEquivalent="q" id="4sb-4s-VLi">
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
                                 <connections>
                                     <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
                                 </connections>
@@ -330,7 +346,11 @@
             </items>
             <point key="canvasLocation" x="142" y="-258"/>
         </menu>
+<<<<<<< HEAD
         <window title="New_App_Name" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g" customClass="MainFlutterWindow" customModule="Runner" customModuleProvider="target">
+=======
+        <window title="APP_NAME" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g" customClass="MainFlutterWindow" customModule="Runner" customModuleProvider="target">
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="335" y="390" width="800" height="600"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>

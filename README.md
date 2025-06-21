@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # expense_tracker
+=======
+# mini_project
+>>>>>>> e05858728bd3e8d67f601764faefb529890e3e4c
 
 A new Flutter project.
 
